@@ -50,7 +50,7 @@ cv.imshow('Sin ruido', img)
 trUP = 255
 trLow = 150
 
-ret,bin = cv.threshold(img, trLow, trUP, cv.THRESH_TOZERO_INV)   #---Binary threshold---
+ret,bin = cv.threshold(img, trLow, trUP, cv.THRESH_TOZERO_INV)
 
 cv.imshow('Segmentada', bin)
 cv.imshow('Original', imgOrg)
