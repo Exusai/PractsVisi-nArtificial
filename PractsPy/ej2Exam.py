@@ -6,8 +6,8 @@ import matplotlib.pyplot as plt
 
 
 # leer img
-ath = cv.imread('ath.jpg', 1)
-vader = cv.imread('vader.jpg', 1)
+ath = cv.imread('imgs/ath.jpg', 1)
+vader = cv.imread('imgs/vader.jpg', 1)
 
 alpha = .5
 

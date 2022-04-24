@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 
-im = cv2.imread("lennaRGB.png")
+im = cv2.imread("imgs/LennaRGB.png")
 #gray = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
 
 b, g, r = cv2.split(im)

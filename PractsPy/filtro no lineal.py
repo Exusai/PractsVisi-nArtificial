@@ -6,7 +6,7 @@ import cv2 as cv
 import numpy as np
 from scipy.ndimage import *
 
-im = cv.imread('lenaNoise.png', 1)
+im = cv.imread('imgs/lenaNoise.png', 1)
 
 imgGray = cv.cvtColor(im, cv.COLOR_BGR2GRAY)
 

@@ -2,7 +2,7 @@ import cv2 as cv
 import numpy as np
 
 def new_func():
-    im = cv.imread("lennaRGB.png")
+    im = cv.imread("imgs/LennaRGB.png")
     return im
 
 img = new_func()

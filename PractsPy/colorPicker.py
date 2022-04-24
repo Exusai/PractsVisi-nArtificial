@@ -3,7 +3,7 @@ from scipy import ndimage
 from skimage import filters
 import numpy as np
 
-img = cv.imread('lennaRGB.png', 1)
+img = cv.imread('imgs/LennaRGB.png', 1)
 imgCopy = img.copy()
 
 cv.imshow('Colores', imgCopy)

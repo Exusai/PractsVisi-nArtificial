@@ -7,7 +7,7 @@ import numpy as np
 #img = np.ones((alto,ancho, 3), np.uint8)*255
 #print(img[10,20,:])
 #img[:] = (255, 0, 0) #BGR
-img = cv.imread("lennaRGB.png")
+img = cv.imread("imgs/LennaRGB.png")
 
 # ponendo grid sobre imagen
 gridSpacing = 50
