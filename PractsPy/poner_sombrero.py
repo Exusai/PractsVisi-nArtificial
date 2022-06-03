@@ -20,7 +20,7 @@ rostros = clasificador.detectMultiScale(img_gray, 1.3, 5)
 
 for x, y, w, h in rostros:
     #cv.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 2)
-    sombrero_resized = cv.resize(sombrero, (w, h))
+    sombrero_resized = cv.resize(sombrero, (w, int(h/2)))
 
     sombrero_gray = cv.cvtColor(sombrero, cv.COLOR_BGR2GRAY)
     th, threshed = cv.threshold(sombrero_gray, 2, 255, cv.THRESH_BINARY_INV)

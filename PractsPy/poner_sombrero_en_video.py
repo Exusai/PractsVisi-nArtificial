@@ -64,7 +64,7 @@ while True:
     for x, y, w, h in rostros:
         #cv.rectangle(frame, (x, y), (x + w, y + h), color, grosor)
         try:
-            sombrero_resized = cv.resize(sombrero, (w, h))
+            sombrero_resized = cv.resize(sombrero, (w, int(h/2)))
 
             sombrero_gray = cv.cvtColor(sombrero, cv.COLOR_BGR2GRAY)
             th, threshed = cv.threshold(sombrero_gray, 2, 255, cv.THRESH_BINARY_INV)
