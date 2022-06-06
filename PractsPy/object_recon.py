@@ -49,7 +49,7 @@ def black_object_contour_det(img):
     image_gray = cv.threshold(image_gray, tr, 255, cv.THRESH_BINARY)[1]
 
     # find contours
-    contours, hierarchy = cv.findContours(image_gray, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
+    contours, _ = cv.findContours(image_gray, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
 
     return contours
 
@@ -61,7 +61,7 @@ def green_object_contour_det(img):
     image_hsv = cv.inRange(image_hsv, hsv_lower, hsv_upper)
 
     # find contours
-    contours, hierarchy = cv.findContours(image_hsv, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
+    contours, _ = cv.findContours(image_hsv, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
 
     return contours
 
