@@ -98,22 +98,53 @@ while True:
 
     if measuring:
         corners, _, _ = cv.aruco.detectMarkers(image, aruci_dict, parameters=parameters)
-        
-        if corners is not None:
+
+        if len(corners) > 0:
             # draw markers
             image = cv.aruco.drawDetectedMarkers(image, corners)
+            aruco_perimeter = cv.arcLength(corners[0], True)
 
-            # remove 
+            # get aruco min and max x and y
+            aruco_min_x = corners[0][0][0][0]
+            aruco_min_y = corners[0][0][0][1]
+            aruco_max_x = corners[0][0][0][0]
+            aruco_max_y = corners[0][0][0][1]
+            
+            # pixel to meter conversion
+            pixel_cm_ratio = aruco_perimeter / 20
 
-        for c in contours:
-            rect = cv.minAreaRect(c)
-            (x,y), (w,h), angle = rect
-            box = cv.boxPoints(rect)
-            box = np.int0(box)
+            # list of centers of contours
+            centers = []
+            for c in contours:
+                [x, y, w, h] = cv.boundingRect(c)
+                centers.append((x + w/2, y + h/2))
 
-            cv.circle(image, (int(x), int(y)), 5, (0, 0, 255), -1)
-            cv.polylines(image, [box], True, (0, 255, 0), 2)
+            # check if centers are inside aruco perimeter
+            index_to_drop = []
+            i = 0
+            for c in centers:
+                if (cv.pointPolygonTest(corners[0], c, True) >= 0):
+                    index_to_drop.append(i)
+                i += 1
 
+            # drop contours that are inside aruco perimeter
+            contours = [c for i, c in enumerate(contours) if i not in index_to_drop]
+            
+            for c in contours:
+                rect = cv.minAreaRect(c)
+                (x,y), (w,h), angle = rect
+                box = cv.boxPoints(rect)
+                box = np.int0(box)
+
+                object_width = w/pixel_cm_ratio
+                object_height = h/pixel_cm_ratio   
+
+                object_width = round(object_width, 2)
+                object_height = round(object_height, 2)
+
+                cv.circle(image, (int(x), int(y)), 5, (255, 0, 0), -1)
+                cv.polylines(image, [box], True, (0, 255, 0), 2)
+                cv.putText(image, str(object_width) + 'X' + str(object_height), (int(x), int(y)), cv.FONT_HERSHEY_SIMPLEX, .5, (0, 0, 255), 1)
         
     else:
         for green_contour in green_object_contours:
