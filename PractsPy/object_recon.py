@@ -65,6 +65,25 @@ def green_object_contour_det(img):
 
     return contours
 
+def remove_aruco_contour(contours, aruco_corners):
+     # list of centers of contours
+    centers = []
+    for c in contours:
+        [x, y, w, h] = cv.boundingRect(c)
+        centers.append((x + w/2, y + h/2))
+
+    # check if centers are inside aruco perimeter
+    index_to_drop = []
+    i = 0
+    for c in centers:
+        if (cv.pointPolygonTest(aruco_corners, c, True) >= 0):
+            index_to_drop.append(i)
+        i += 1
+
+    # drop contours that are inside aruco perimeter
+    contours = [c for i, c in enumerate(contours) if i not in index_to_drop]
+    return contours
+
 # create window
 cv.namedWindow('img', cv.WINDOW_NORMAL)
 cv.resizeWindow('img', 600, 700)
@@ -96,39 +115,23 @@ while True:
     # concatenate contours
     contours = black_object_contours + green_object_contours
 
-    if measuring:
+    try:
         corners, _, _ = cv.aruco.detectMarkers(image, aruci_dict, parameters=parameters)
+        green_object_contours = remove_aruco_contour(green_object_contours, corners[0])
+        black_object_contours = remove_aruco_contour(black_object_contours, corners[0])
+    except:
+        pass
 
+    if measuring:
         if len(corners) > 0:
             # draw markers
             image = cv.aruco.drawDetectedMarkers(image, corners)
-            aruco_perimeter = cv.arcLength(corners[0], True)
 
-            # get aruco min and max x and y
-            aruco_min_x = corners[0][0][0][0]
-            aruco_min_y = corners[0][0][0][1]
-            aruco_max_x = corners[0][0][0][0]
-            aruco_max_y = corners[0][0][0][1]
-            
+            aruco_perimeter = cv.arcLength(corners[0], True)
             # pixel to meter conversion
             pixel_cm_ratio = aruco_perimeter / 20
-
-            # list of centers of contours
-            centers = []
-            for c in contours:
-                [x, y, w, h] = cv.boundingRect(c)
-                centers.append((x + w/2, y + h/2))
-
-            # check if centers are inside aruco perimeter
-            index_to_drop = []
-            i = 0
-            for c in centers:
-                if (cv.pointPolygonTest(corners[0], c, True) >= 0):
-                    index_to_drop.append(i)
-                i += 1
-
-            # drop contours that are inside aruco perimeter
-            contours = [c for i, c in enumerate(contours) if i not in index_to_drop]
+            
+            contours = remove_aruco_contour(contours, corners[0])
             
             for c in contours:
                 rect = cv.minAreaRect(c)
@@ -142,9 +145,11 @@ while True:
                 object_width = round(object_width, 2)
                 object_height = round(object_height, 2)
 
-                cv.circle(image, (int(x), int(y)), 5, (255, 0, 0), -1)
+                cv.circle(image, (int(x), int(y)), 3, (255, 0, 0), -1)
                 cv.polylines(image, [box], True, (0, 255, 0), 2)
-                cv.putText(image, str(object_width) + 'X' + str(object_height), (int(x), int(y)), cv.FONT_HERSHEY_SIMPLEX, .5, (0, 0, 255), 1)
+
+                cv.putText(image, "Ancho: " + str(object_width) + "cm", (int(x), int(y)), cv.FONT_HERSHEY_SIMPLEX, .5, (0, 0, 255), 1,cv.LINE_AA)
+                cv.putText(image, "Alto: " + str(object_height) + "cm", (int(x), int(y) + 20), cv.FONT_HERSHEY_SIMPLEX, .5, (0, 0, 255), 1, cv.LINE_AA)
         
     else:
         for green_contour in green_object_contours:
@@ -152,7 +157,7 @@ while True:
             [x, y, w, h] = cv.boundingRect(green_contour)
 
             # label contour as "bara"
-            cv.putText(image, "talon", (x, y - 10), cv.FONT_HERSHEY_SIMPLEX, .5, (255, 0, 0), 1)
+            cv.putText(image, "talon", (x, y - 10), cv.FONT_HERSHEY_SIMPLEX, .5, (255, 0, 0), 1, cv.LINE_AA)
             talones += 1
 
             # plot contour
@@ -163,7 +168,7 @@ while True:
             [x, y, w, h] = cv.boundingRect(black_contour)
 
             # label contour as "talón"
-            cv.putText(image, "bara", (x, y - 10), cv.FONT_HERSHEY_SIMPLEX, .5, (255, 0, 0), 1)
+            cv.putText(image, "bara", (x, y - 10), cv.FONT_HERSHEY_SIMPLEX, .5, (255, 0, 0), 1, cv.LINE_AA)
             baras += 1
 
             # plot contour
