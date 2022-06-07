@@ -44,7 +44,7 @@ hsv_lower = (lower_hue, lower_saturation, lower_value)
 def black_object_contour_det(img):
     image_gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
     image_gray = cv.blur(image_gray, blur_size)
-
+    
     # segmentate image based on trackbar value
     image_gray = cv.threshold(image_gray, tr, 255, cv.THRESH_BINARY)[1]
 
